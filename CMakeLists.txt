@@ -4,25 +4,27 @@ project(Nlog)
 set(CMAKE_CXX_STANDARD 11)
 add_compile_options(-Wall -Werror -Wno-error=unused-variable -O3 -fPIC)
 
+find_package(Threads REQUIRED)
+
 file(GLOB_RECURSE SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} src/details/LogMessage.cpp src/details/LogMessage.h src/details/StopWatch.h src/loggers/ConsoleLogger.cpp src/loggers/ConsoleLogger.h src/loggers/BasicFileLogger.cpp src/loggers/BasicFileLogger.h src/loggers/RotateFileLogger.cpp src/loggers/RotateFileLogger.h src/details/FileHelper.cpp src/details/FileHelper.h)
 #add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 add_executable(example example/main.cpp)
-target_link_libraries(example ${PROJECT_NAME})
+target_link_libraries(example ${PROJECT_NAME} Threads::Threads)
 
 install(DIRECTORY ./src/
-  DESTINATION ./include/Nlog
-  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+        DESTINATION ./include/Nlog
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include)
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
 
 install(EXPORT ${PROJECT_NAME}Targets
-  FILE ${PROJECT_NAME}Config.cmake
-  DESTINATION cmake)
+        FILE ${PROJECT_NAME}Config.cmake
+        DESTINATION cmake)
