@@ -17,7 +17,7 @@ int main()
         std::make_shared<meta_log::RotateFileLogger>("basic_file_logger", "./log", 1024 * 1024 * 10);
     meta_log::AddLogger(rotate_file_logger);
 
-    meta_log::SetLogLevel(meta_log::Level::DEBUG);
+    meta_log::SetLogLevel(meta_log::Level::VERBOSE);
     meta_log::SetFlag(meta_log::Flag::FIXED);
     meta_log::SetContainerMax(2);
     meta_log::FlushEvery(std::chrono::seconds(2));
@@ -103,6 +103,10 @@ int main()
         meta_log::StopWatch sw;
         LOG_DEBUG(stopwatch) << "start to sleep 1s";
         usleep(1 * 1e6);
+        LOG_DEBUG(stopwatch) << "cost:" << sw << "s";
+        sw.reset();
+        LOG_DEBUG(stopwatch) << "start to sleep 0.5s";
+        usleep(0.5 * 1e6);
         LOG_DEBUG(stopwatch) << "cost:" << sw << "s";
     }
 
